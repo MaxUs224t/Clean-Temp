@@ -9,6 +9,7 @@ class CleanTempApp:
         self.root = root
         self.root.title("Clean Temp - Удаление временных файлов")
         self.root.geometry("900x650")
+
         # Запрещаем изменение размера окна
         self.root.resizable(False, False)
         
@@ -21,10 +22,10 @@ class CleanTempApp:
         self.temp_files = []
         self.total_size = 0
         
-        # Создаем стиль для виджетов
+        # Стиль для виджетов
         self.setup_styles()
         
-        # Создаем основную структуру
+        # Основная структура
         self.create_widgets()
         
     def setup_styles(self):
@@ -81,14 +82,15 @@ class CleanTempApp:
     
     def create_widgets(self):
         """Создание виджетов интерфейса"""
-        # Устанавливаем цвет фона окна
+
+        # Цвет фона окна
         self.root.configure(bg='#FFFFFF')
         
-        # Создаем основной фрейм для содержимого
+        # Основной фрейм для содержимого
         self.main_frame = tk.Frame(self.root, bg='#FFFFFF')
         self.main_frame.pack(fill="both", expand=True, padx=20, pady=15)
         
-        # Создаем Notebook (вкладки) с меньшей высотой
+        # Notebook (вкладки)
         notebook = ttk.Notebook(self.main_frame, style="Custom.TNotebook")
         notebook.pack(fill="both", expand=True)
         
@@ -111,6 +113,7 @@ class CleanTempApp:
         
     def setup_check_tab(self):
         """Настройка вкладки проверки файлов"""
+
         # Панель с кнопками
         button_frame = tk.Frame(self.check_frame, bg='#FFFFFF')
         button_frame.pack(fill="x", padx=10, pady=10)
@@ -132,7 +135,7 @@ class CleanTempApp:
                                 columns=columns, 
                                 show="headings",
                                 style="CleanTemp.Treeview",
-                                height=18,  # Уменьшили высоту таблицы
+                                height=18,
                                 selectmode="extended")
         
         # Настройка колонок с функциями сортировки и выравниванием
@@ -143,10 +146,10 @@ class CleanTempApp:
         self.tree.heading("date", text="Date Created", 
                          command=lambda: self.sort_by_column("date"))
         
-        # Выравнивание колонок: первая - по левому краю, остальные - по правому
-        self.tree.column("file", width=400, minwidth=200, anchor="w")  # w = west (левый край)
-        self.tree.column("size", width=150, minwidth=100, anchor="e")  # e = east (правый край)
-        self.tree.column("date", width=200, minwidth=150, anchor="e")  # e = east (правый край)
+        # Выравнивание колонок
+        self.tree.column("file", width=400, minwidth=200, anchor="w")
+        self.tree.column("size", width=150, minwidth=100, anchor="e")
+        self.tree.column("date", width=200, minwidth=150, anchor="e")
         
         # Полосы прокрутки
         v_scrollbar = ttk.Scrollbar(table_frame, 
@@ -172,6 +175,7 @@ class CleanTempApp:
         
     def setup_delete_tab(self):
         """Настройка вкладки удаления файлов"""
+
         # Фрейм для содержимого
         content_frame = tk.Frame(self.delete_frame, bg='#FFFFFF')
         content_frame.place(relx=0.5, rely=0.35, anchor="center")  # Подняли немного выше
@@ -202,7 +206,8 @@ class CleanTempApp:
         
     def setup_footer_stats(self):
         """Панель статистики внизу окна"""
-        # Создаем отдельный фрейм для статистики ПОД основным фреймом
+
+        # Отдельный фрейм для статистики под основным фреймом
         self.footer_frame = tk.Frame(self.root, bg='#910909', height=40)
         self.footer_frame.pack(side="bottom", fill="x", padx=0, pady=0)
         
@@ -224,7 +229,7 @@ class CleanTempApp:
             self.sort_column = column
             self.sort_reverse = False
         
-        # Определяем ключ для сортировки
+        # Ключ для сортировки
         if column == "file":
             key = lambda x: x[0].lower()  # Сортировка по имени без учета регистра
         elif column == "size":
@@ -232,13 +237,13 @@ class CleanTempApp:
         elif column == "date":
             key = lambda x: x[4]  # Сортировка по дате создания
         
-        # Сортируем данные
+        # Сортировка данных
         self.display_data.sort(key=key, reverse=self.sort_reverse)
         
-        # Обновляем отображение
+        # Обновление отображения
         self.update_treeview()
         
-        # Обновляем заголовки для отображения стрелки сортировки
+        # Обновление заголовков для отображения стрелки сортировки
         self.update_sort_indicators()
     
     def update_sort_indicators(self):
@@ -254,11 +259,12 @@ class CleanTempApp:
     
     def update_treeview(self):
         """Обновление отображения данных в Treeview"""
+
         # Очищаем текущие данные
         for item in self.tree.get_children():
             self.tree.delete(item)
         
-        # Если нет файлов, показываем сообщение
+        # Если нет файлов
         if not self.display_data:
             self.tree.insert("", "end", values=("No Files Deleted", "", ""))
         else:
@@ -279,7 +285,7 @@ class CleanTempApp:
         """Проверка временных файлов"""
         temp_path = os.environ.get('TEMP', 'C:\\Windows\\Temp')
         
-        # Очищаем предыдущие данные
+        # Очистка предыдущих данных
         for item in self.tree.get_children():
             self.tree.delete(item)
         
@@ -390,7 +396,6 @@ def main():
     
     # Настраиваем иконку окна
     try:
-        # Для Windows
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("CleanTemp.App")
     except:
         pass
@@ -409,7 +414,7 @@ def main():
     y = (root.winfo_screenheight() // 2) - (height // 2)
     root.geometry(f'{width}x{height}+{x}+{y}')
     
-    # Скрываем консольное окно (только для Windows)
+    # Скрываем консольное окно
     try:
         ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
     except:
